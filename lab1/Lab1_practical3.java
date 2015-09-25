@@ -7,7 +7,7 @@ public class Lab1_practical3 {
 		System.out.println("Hello World");
 		try{
 			
-			Socket socket = new Socket("localhost",9876);
+			Socket socket = new Socket("localhost",9870);
 			//127.0.0.1  == local host
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

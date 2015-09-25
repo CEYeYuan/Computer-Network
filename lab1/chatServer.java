@@ -1,15 +1,11 @@
 import java.net.*;
 import java.io.*;
-public class myServer{
+public class chatServer{
 	public static void main(String[] args){
 		System.out.println("Hello World");
 		try{	
-			ServerSocket server = new ServerSocket(9876);
-			Socket socket=null;
-			
-			while(socket==null){
-				socket=server.accept();
-			}
+			ServerSocket server = new ServerSocket(9870);
+			Socket socket=server.accept();
 
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -18,12 +14,15 @@ public class myServer{
 			while(true){
 			String str = socket_reader.readLine();
 			System.out.println(str);
+			if(str.equalsIgnoreCase("quit")){
+				socket.close();
+				break;
+			}
 			
-			String str = reader.readLine();
+			
+			str = reader.readLine();
 			writer.writeBytes(str + "\r\n");
-			if(str.equalsIgnoreCase("quit"))
-				break;}
-			socket.close();
-		}catch(Exception e){e.getStackTrace();}
+			
+		}}catch(Exception e){e.getStackTrace();}
 	}	
 }
