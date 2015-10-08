@@ -11,15 +11,13 @@ public class listen implements Runnable{
 	public void run()  {
 			System.out.println("Hello World");
 		try{
-			while(true){
+
 			String str = socket_reader.readLine();
 			System.out.println("Received: "+str);
 			
 			//"\r\n" means the end of a packet
 			if(str.equalsIgnoreCase("quit")){
 				socket.close();
-				break;
-				}
 			}
 		}
 		catch(Exception e){e.getStackTrace();}

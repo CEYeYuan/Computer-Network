@@ -13,16 +13,13 @@ public class send implements Runnable{
 	public void run()  {
 			System.out.println("Hello World");
 		try{
-			while(true){
 			String str = reader.readLine();
 			System.out.println("sent: "+str);
 			writer.writeBytes(str + "\r\n");
 			
 			//"\r\n" means the end of a packet
 			if(str.equalsIgnoreCase("quit"))
-				break;
-		}
-			socket.close();
+				socket.close();
 		}
 		catch(Exception e){e.getStackTrace();}
 	}
