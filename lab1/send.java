@@ -20,7 +20,8 @@ public class send implements Runnable{
 			
 			//"\r\n" means the end of a packet
 			if(str.equalsIgnoreCase("quit"))
-				break;}
+				break;
+		}
 			socket.close();
 		}
 		catch(Exception e){e.getStackTrace();}
