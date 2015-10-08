@@ -4,7 +4,7 @@ public class chatServer{
 	public static void main(String[] args){
 		System.out.println("Hello World");
 		try{	
-			ServerSocket server = new ServerSocket(9870);
+			ServerSocket server = new ServerSocket(3333);
 			Socket socket=server.accept();
 
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
