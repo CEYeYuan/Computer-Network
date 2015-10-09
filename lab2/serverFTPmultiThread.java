@@ -13,10 +13,11 @@ public class serverFTPmultiThread{
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket_control.getInputStream()));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			final DataOutputStream writer = new DataOutputStream(socket_control.getOutputStream());
-
+			int i=0;
 			
-			if(true){
-
+			while(true){
+			if(i!=0)	continue;
+			i++;
 			String str = socket_reader.readLine();
 			System.out.println("client sent:"+str);
 			final File file=new File(str);
@@ -82,8 +83,8 @@ public class serverFTPmultiThread{
 
 			//two way to close the socket_control:1.file transfer complete 2.client said "quit"
 			if(str.equalsIgnoreCase("quit")){
-				//socket_control.close();
-				//break;
+				socket_control.close();
+				break;
 			}
 		  }
 		}

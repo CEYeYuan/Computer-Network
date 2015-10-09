@@ -14,10 +14,13 @@ public class clientFTPmultiThread {
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			DataOutputStream writer = new DataOutputStream(socket_control.getOutputStream());
 			long time=0;
-			if(true){
-				
+			int i=0;
+			while(true){
+				if(i!=0)	continue;
+				i++;
 
 				String str1 = reader.readLine();
+				if(str1==null||str1.length()==0)	continue;
 				writer.writeBytes(str1 + "\r\n");
 				System.out.println("client: I'd like to get file \""+str1+"\"\n");
 
@@ -83,8 +86,8 @@ public class clientFTPmultiThread {
 			
 			
 			//"\r\n" means the end of a packet
-			//if(str1.equalsIgnoreCase("quit"))
-			//	break;
+			if(str1.equalsIgnoreCase("quit"))
+				break;
 			}
 			//socket_control.close();
 		}catch(Exception e){e.printStackTrace();}
