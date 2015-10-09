@@ -9,9 +9,8 @@ public class client {
 	public static void main(String[] args) {
 		System.out.println("Hello World, I'm client");
 		try{
-			
+
 			Socket socket = new Socket("localhost",9870);
-			//127.0.0.1  == local host
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			DataOutputStream writer = new DataOutputStream(socket.getOutputStream());
@@ -30,12 +29,23 @@ public class client {
 			System.out.println("server responese:\""+str+"\"\n");
 			if(str.equalsIgnoreCase("File exists, everything works fine! The file transfer is about to begin")){
 				System.out.println("about to accept the file");
-					// read lines from socket:
+				// read lines from socket:
 				// define once:
 				BufferedReader socket_bf = new BufferedReader(
 						new InputStreamReader(socket.getInputStream()));
 				// use everytime!
 				String str = socket_bf.readLine();
+
+				DataInputStream socket_dis = new DataInputStream(socket.getInputStream());
+				int len =socket_dis.read(buffer);
+				if(len<0)
+					System.out.println("done receiving data.");
+			
+
+				FileOutputStream fos= new FileOutputStream(file);
+				//use everytime:
+				fos.write(buffer); //writing the whole buffer
+				fos.write(buffer, 0, len); //writing a portion of buffer
 			}
 			
 			

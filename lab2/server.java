@@ -21,15 +21,28 @@ public class server{
 				//read data from the file
 				FileInputStream fin= new FileInputStream(file);
 				byte[] buffer = new byte[1024];
+				// define once:
+				DataOutputStream socket_dos = new DataOutputStream(
+						socket.getOutputStream());
+				String CRLF = "\r\n";
+				
+				while(true){
+					//reads up to len bytes of data from input stream to buffer; return the # of bytes
+					int len=fin.read(buffer,0,1024);
+					// write lines to socket:
+					if(len<=0)	break;
+					//use everytime:
+					socket_dos.write(buffer, 0, len); //writing a portion of buffer
+				}
+				socket.close();
+				break;
+				
 			}
 				
 				//server responds YES
 			else
 				writer.writeBytes("The file you claim does not exist"+ "\r\n");
 
-
-
-			
 
 			//two way to close the socket:1.file transfer complete 2.client said "quit"
 			if(str.equalsIgnoreCase("quit")){
