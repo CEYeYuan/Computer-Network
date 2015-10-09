@@ -26,26 +26,21 @@ public class client {
 			
 					if(str.equalsIgnoreCase("File exists, everything works fine! The file transfer is about to begin")){
 						System.out.println("about to accept the file");
-						// read lines from socket:
+						// read data from socket
 						// define once:
-						BufferedReader socket_bf = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-						// use everytime!
-						File file=new File("test.txt");
-						while (true){
-							String str = socket_bf.readLine();
-						}
-						
-
 						DataInputStream socket_dis = new DataInputStream(socket.getInputStream());
-						int len =socket_dis.read(buffer);
-						if(len<0)
-							System.out.println("done receiving data.");
-					
-
+						File file=new File("test.txt");
 						FileOutputStream fos= new FileOutputStream(file);
-						//use everytime:
-						fos.write(buffer); //writing the whole buffer
-						fos.write(buffer, 0, len); //writing a portion of buffer
+						byte[] buffer = new byte[1024];
+						while (true){
+							int len =socket_dis.read(buffer);
+							if(len<=0){
+								System.out.println("done receiving data.");
+								break;
+							}
+							fos.write(buffer, 0, len); //writing a portion of buffer
+						}	
+						socket.close();
 					}
 			
 			
