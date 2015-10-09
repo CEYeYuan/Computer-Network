@@ -17,7 +17,8 @@ public class server{
 			File file=new File(str);
 			
 			if (file.exists()){
-				
+				long length=file.length();
+				System.out.println(length);
 				writer.writeBytes("File exists, everything works fine! The file transfer is about to begin"+ "\r\n");
 				//read data from the file
 				FileInputStream fin= new FileInputStream(file);
@@ -31,11 +32,7 @@ public class server{
 					//reads up to len bytes of data from input stream to buffer; return the # of bytes
 					int len=fin.read(buffer,0,1024);
 					// write lines to socket:
-					if(len<=0)	{
-						long length=file.length();
-						System.out.println("file.length() = "+length);
-						break;
-					}
+					if(len<=0)	break;
 					//use everytime:
 					socket_dos.write(buffer, 0, len); //writing a portion of buffer
 				}
