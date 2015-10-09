@@ -6,6 +6,7 @@ public class server2{
 		try{	
 			ServerSocket server = new ServerSocket(9100);
 			Socket socket_control=server.accept();
+			//System.out.println("ac");
 			
 
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket_control.getInputStream()));
@@ -20,10 +21,18 @@ public class server2{
 			if (file.exists()){
 				long length=file.length();
 						System.out.println("file.length() = "+length);
-				
+
+
 				writer.writeBytes("File exists, everything works fine! The file transfer is about to begin"+ "\r\n");
-				int port_num=7777;
+				int port_num=7000;
+				ServerSocket server2 = new ServerSocket(port_num);
+				//System.out.println("new socket is established");
 				writer.writeBytes(port_num+"\r\n");
+				//System.out.println("port num is sent");
+				Socket socket_data=server2.accept();
+				//System.out.println("new socket is accepted");
+
+				
 				
 				//read data from the file
 				FileInputStream fin= new FileInputStream(file);
@@ -32,8 +41,7 @@ public class server2{
 
 				//new connection send port num to client
 				
-				ServerSocket server2 = new ServerSocket(port_num);
-				Socket socket_data=server2.accept();
+				
 				
 
 				DataOutputStream socket_dos = new DataOutputStream(

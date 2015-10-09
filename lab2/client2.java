@@ -24,21 +24,18 @@ public class client2 {
 			    str = socket_reader.readLine();
 				System.out.println("server responese:\""+str+"\"\n");
 
-				str = socket_reader.readLine();
-				System.out.println("server responese:\""+str+"\"\n");
-				int port_num=Integer.parseInt(str);
-
 
 					if(str.equalsIgnoreCase("File exists, everything works fine! The file transfer is about to begin")){
 						System.out.println("about to accept the file, please type in the name of the file to be stored localy");
 						// read data from socket_control
 						// define once:
 						
-
-					  
-						//int port_num=Integer.parseInt(str);
+						str = socket_reader.readLine();
+						//System.out.println("server port_num:\""+str+"\"\n");
+						int port_num=Integer.parseInt(str);
 						Socket socket_data = new Socket("localhost",port_num);
-						//System.out.println("get new port number "+port_num);
+					  
+					
 						DataInputStream socket_dis = new DataInputStream(socket_data.getInputStream());
 
 
