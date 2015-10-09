@@ -7,7 +7,7 @@ public class Lab1_practical3 {
 		System.out.println("Hello World");
 		try{
 			
-			Socket socket = new Socket("localhost",9870);
+			Socket socket = new Socket("localhost",3319);
 			//127.0.0.1  == local host
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -19,15 +19,18 @@ public class Lab1_practical3 {
 			time=System.currentTimeMillis();
 			System.out.println(time+"Time sent");
 			writer.writeBytes(str + "\r\n");
+			
 
-			str = socket_reader.readLine();
+		    str = socket_reader.readLine();
 			System.out.println(System.currentTimeMillis()+"Time Received");
 			System.out.println(System.currentTimeMillis()-time+"Round trip time");
 			System.out.println(str);
 			
+			
 			//"\r\n" means the end of a packet
 			if(str.equalsIgnoreCase("quit"))
-				break;}
+				break;
+			}
 			socket.close();
 		}catch(Exception e){e.getStackTrace();}
 	}
