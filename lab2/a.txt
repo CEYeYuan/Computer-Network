@@ -41,7 +41,7 @@ public class server{
 					socket_dos.write(buffer, 0, len); //writing a portion of buffer
 				}
 				fin.close();
-				socket.close();
+				//socket.close();
 				break;
 				
 			}
