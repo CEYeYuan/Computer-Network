@@ -2,7 +2,6 @@ import java.net.*;
 import java.io.*;
 
 public class clientFTPmultiThread {
-	static boolean threadCreated=false;
 	/**
 	 * @param args
 	 */
@@ -15,10 +14,9 @@ public class clientFTPmultiThread {
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			DataOutputStream writer = new DataOutputStream(socket_control.getOutputStream());
 			long time=0;
-			while(true&&threadCreated==false){
-				String tf=threadCreated==true?"true":"false";
-					System.out.println(tf);
+			if(true){
 				
+
 				String str1 = reader.readLine();
 				writer.writeBytes(str1 + "\r\n");
 				System.out.println("client: I'd like to get file \""+str1+"\"\n");
@@ -33,7 +31,7 @@ public class clientFTPmultiThread {
 						new Thread(new Runnable(){
 							public void run(){
 								try{
-									threadCreated=true;
+									
 									System.out.println("about to accept the file, please type in the name of the file to be stored localy");
 									// read data from socket_control
 									// define once:
@@ -79,15 +77,16 @@ public class clientFTPmultiThread {
 								}
 								}
 						}).start();
+
 						
 					}
 			
 			
 			//"\r\n" means the end of a packet
-			if(str1.equalsIgnoreCase("quit"))
-				break;
+			//if(str1.equalsIgnoreCase("quit"))
+			//	break;
 			}
-			socket_control.close();
+			//socket_control.close();
 		}catch(Exception e){e.printStackTrace();}
 	}
 
