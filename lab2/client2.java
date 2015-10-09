@@ -10,7 +10,7 @@ public class client2 {
 		System.out.println("Hello World, I'm client");
 		try{
 
-			Socket socket_control = new Socket("localhost",9879);
+			Socket socket_control = new Socket("localhost",9100);
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket_control.getInputStream()));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			DataOutputStream writer = new DataOutputStream(socket_control.getOutputStream());
@@ -24,15 +24,21 @@ public class client2 {
 			    str = socket_reader.readLine();
 				System.out.println("server responese:\""+str+"\"\n");
 
+				str = socket_reader.readLine();
+				System.out.println("server responese:\""+str+"\"\n");
+				int port_num=Integer.parseInt(str);
+
+
 					if(str.equalsIgnoreCase("File exists, everything works fine! The file transfer is about to begin")){
 						System.out.println("about to accept the file, please type in the name of the file to be stored localy");
 						// read data from socket_control
 						// define once:
 						
-						str = socket_reader.readLine();
-						int port_num=Integer.parseInt(str);
-						Socket socket_data = new Socket("localhost",9899);
-						System.out.println("get new port number "+port_num);
+
+					  
+						//int port_num=Integer.parseInt(str);
+						Socket socket_data = new Socket("localhost",port_num);
+						//System.out.println("get new port number "+port_num);
 						DataInputStream socket_dis = new DataInputStream(socket_data.getInputStream());
 
 

@@ -4,7 +4,7 @@ public class server2{
 	public static void main(String[] args){
 		System.out.println("Hello World, I' server");
 		try{	
-			ServerSocket server = new ServerSocket(9879);
+			ServerSocket server = new ServerSocket(9100);
 			Socket socket_control=server.accept();
 			
 
@@ -22,16 +22,19 @@ public class server2{
 						System.out.println("file.length() = "+length);
 				
 				writer.writeBytes("File exists, everything works fine! The file transfer is about to begin"+ "\r\n");
+				int port_num=7777;
+				writer.writeBytes(port_num+"\r\n");
+				
 				//read data from the file
 				FileInputStream fin= new FileInputStream(file);
 				byte[] buffer = new byte[1024];
 				// define once:
 
 				//new connection send port num to client
-				int port_num=9899;
-				ServerSocket server2 = new ServerSocket(9899);
+				
+				ServerSocket server2 = new ServerSocket(port_num);
 				Socket socket_data=server2.accept();
-				writer.writeBytes(port_num+"\r\n");
+				
 
 				DataOutputStream socket_dos = new DataOutputStream(
 						socket_data.getOutputStream());
