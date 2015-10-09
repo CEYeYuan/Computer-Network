@@ -1,6 +1,6 @@
 import java.net.*;
 import java.io.*;
-public class chatServer{
+public class server{
 	public static void main(String[] args){
 		System.out.println("Hello World, I' server");
 		try{	
@@ -13,16 +13,31 @@ public class chatServer{
 			
 			while(true){
 			String str = socket_reader.readLine();
-			System.out.println(str);
+			System.out.println("client sent:"+str);
+			File file=new File(str);
+			
+			if (file.exists()){
+				writer.writeBytes("File exists, everything works fine! The file transfer is about to begin"+ "\r\n");
+				//read data from the file
+				FileInputStream fin= new FileInputStream(file);
+				byte[] buffer = new byte[1024];
+			}
+				
+				//server responds YES
+			else
+				writer.writeBytes("The file you claim does not exist"+ "\r\n");
+
+
+
+			
+
+			//two way to close the socket:1.file transfer complete 2.client said "quit"
 			if(str.equalsIgnoreCase("quit")){
 				socket.close();
 				break;
 			}
-			
-			
-			str = reader.readLine();
-			writer.writeBytes(str + "\r\n");
-			
-		}}catch(Exception e){e.getStackTrace();}
+		  }
+		}
+		catch(Exception e){e.printStackTrace();}
 	}	
 }

@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class CodeFromClass {
+public class CodeFrom_previousClasses {
 
 	/**
 	 * @param args
@@ -15,7 +15,7 @@ public class CodeFromClass {
 	public static void main(String[] args) {
 		try {
 			// define a (client socket)
-			Socket socket = new Socket("localhost", 1234);
+			Socket socket = new Socket("localhost", 9876);
 
 			// read lines from socket:
 			// define once:
