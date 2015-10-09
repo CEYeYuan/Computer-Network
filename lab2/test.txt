@@ -4,7 +4,7 @@ public class server{
 	public static void main(String[] args){
 		System.out.println("Hello World, I' server");
 		try{	
-			ServerSocket server = new ServerSocket(9878);
+			ServerSocket server = new ServerSocket(9879);
 			Socket socket=server.accept();
 
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -17,6 +17,8 @@ public class server{
 			File file=new File(str);
 			
 			if (file.exists()){
+				long length=file.length();
+						System.out.println("file.length() = "+length);
 				
 				writer.writeBytes("File exists, everything works fine! The file transfer is about to begin"+ "\r\n");
 				//read data from the file
@@ -32,8 +34,7 @@ public class server{
 					int len=fin.read(buffer,0,1024);
 					// write lines to socket:
 					if(len<=0)	{
-						long length=file.length();
-						System.out.println("file.length() = "+length);
+						
 						break;
 					}
 					//use everytime:
