@@ -25,11 +25,12 @@ public class client {
 				System.out.println("server responese:\""+str+"\"\n");
 			
 					if(str.equalsIgnoreCase("File exists, everything works fine! The file transfer is about to begin")){
-						System.out.println("about to accept the file");
+						System.out.println("about to accept the file, please type in the name of the file to be stored localy");
 						// read data from socket
 						// define once:
 						DataInputStream socket_dis = new DataInputStream(socket.getInputStream());
-						File file=new File("test.txt");
+						str = reader.readLine();
+						File file=new File(str);
 						FileOutputStream fos= new FileOutputStream(file);
 						byte[] buffer = new byte[1024];
 						while (true){
@@ -40,7 +41,9 @@ public class client {
 							}
 							fos.write(buffer, 0, len); //writing a portion of buffer
 						}	
+
 						socket.close();
+						break;
 					}
 			
 			
