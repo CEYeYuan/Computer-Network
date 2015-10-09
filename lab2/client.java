@@ -17,36 +17,36 @@ public class client {
 			long time=0;
 			while(true){
 			
-			String str = reader.readLine();
-			time=System.currentTimeMillis();
-			//System.out.println(time+"Time sent");
-			writer.writeBytes(str + "\r\n");
-			System.out.println("client: I'd like to get file \""+str+"\"\n");
+				String str = reader.readLine();
+				writer.writeBytes(str + "\r\n");
+				System.out.println("client: I'd like to get file \""+str+"\"\n");
 
-		    str = socket_reader.readLine();
-			//System.out.println(System.currentTimeMillis()+"Time Received");
-			//System.out.println(System.currentTimeMillis()-time+"Round trip time");
-			System.out.println("server responese:\""+str+"\"\n");
-			if(str.equalsIgnoreCase("File exists, everything works fine! The file transfer is about to begin")){
-				System.out.println("about to accept the file");
-				// read lines from socket:
-				// define once:
-				BufferedReader socket_bf = new BufferedReader(
-						new InputStreamReader(socket.getInputStream()));
-				// use everytime!
-				String str = socket_bf.readLine();
-
-				DataInputStream socket_dis = new DataInputStream(socket.getInputStream());
-				int len =socket_dis.read(buffer);
-				if(len<0)
-					System.out.println("done receiving data.");
+			    str = socket_reader.readLine();
+				System.out.println("server responese:\""+str+"\"\n");
 			
+					if(str.equalsIgnoreCase("File exists, everything works fine! The file transfer is about to begin")){
+						System.out.println("about to accept the file");
+						// read lines from socket:
+						// define once:
+						BufferedReader socket_bf = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+						// use everytime!
+						File file=new File("test.txt");
+						while (true){
+							String str = socket_bf.readLine();
+						}
+						
 
-				FileOutputStream fos= new FileOutputStream(file);
-				//use everytime:
-				fos.write(buffer); //writing the whole buffer
-				fos.write(buffer, 0, len); //writing a portion of buffer
-			}
+						DataInputStream socket_dis = new DataInputStream(socket.getInputStream());
+						int len =socket_dis.read(buffer);
+						if(len<0)
+							System.out.println("done receiving data.");
+					
+
+						FileOutputStream fos= new FileOutputStream(file);
+						//use everytime:
+						fos.write(buffer); //writing the whole buffer
+						fos.write(buffer, 0, len); //writing a portion of buffer
+					}
 			
 			
 			//"\r\n" means the end of a packet
