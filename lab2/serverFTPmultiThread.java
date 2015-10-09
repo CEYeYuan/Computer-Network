@@ -1,6 +1,7 @@
 import java.net.*;
 import java.io.*;
 public class serverFTPmultiThread{
+	static boolean threadCreated=false;
 	public static void main(String[] args){
 		System.out.println("Hello World, I' server");
 		try{	
@@ -12,8 +13,12 @@ public class serverFTPmultiThread{
 			BufferedReader socket_reader = new BufferedReader(new InputStreamReader(socket_control.getInputStream()));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			final DataOutputStream writer = new DataOutputStream(socket_control.getOutputStream());
+
 			
-			while(true){
+			while(true&&threadCreated==false){
+				String tf=threadCreated==true?"true":"false";
+					System.out.println(tf);
+
 			String str = socket_reader.readLine();
 			System.out.println("client sent:"+str);
 			final File file=new File(str);
@@ -22,14 +27,15 @@ public class serverFTPmultiThread{
 				long length=file.length();
 						System.out.println("file.length() = "+length);
 
+			writer.writeBytes("File exists, everything works fine! The file transfer is about to begin"+ "\r\n");
+				
+				
 
-				writer.writeBytes("File exists, everything works fine! The file transfer is about to begin"+ "\r\n");
-				
-				
 				new Thread(new Runnable(){
 					public void run() {
 						try{
-								int port_num=2222;
+								threadCreated=true;
+								int port_num=13334;
 								ServerSocket server2 = new ServerSocket(port_num);
 								System.out.println("new socket is established");
 								writer.writeBytes(port_num+"\r\n");
