@@ -1,7 +1,7 @@
 import java.net.*;
 import java.io.*;
 
-public class client2 {
+public class clientFTP {
 
 	/**
 	 * @param args

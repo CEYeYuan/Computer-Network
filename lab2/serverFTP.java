@@ -1,6 +1,6 @@
 import java.net.*;
 import java.io.*;
-public class server2{
+public class serverFTP{
 	public static void main(String[] args){
 		System.out.println("Hello World, I' server");
 		try{	
