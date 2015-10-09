@@ -26,17 +26,16 @@ public class serverFTPmultiThread{
 				writer.writeBytes("File exists, everything works fine! The file transfer is about to begin"+ "\r\n");
 				
 				
-				
 				new Thread(new Runnable(){
 					public void run() {
 						try{
 								int port_num=2222;
 								ServerSocket server2 = new ServerSocket(port_num);
-								//System.out.println("new socket is established");
+								System.out.println("new socket is established");
 								writer.writeBytes(port_num+"\r\n");
-								//System.out.println("port num is sent");
+								System.out.println("port num is sent");
 								Socket socket_data=server2.accept();
-								//System.out.println("new socket is accepted");
+								System.out.println("new socket is accepted");
 			
 								//read data from the file
 								FileInputStream fin= new FileInputStream(file);

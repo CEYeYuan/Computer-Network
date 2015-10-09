@@ -26,13 +26,14 @@ public class clientFTPmultiThread {
 
 
 					if(str1.equalsIgnoreCase("File exists, everything works fine! The file transfer is about to begin")){
-						System.out.println("about to accept the file, please type in the name of the file to be stored localy");
-						// read data from socket_control
-						// define once:
+						
 						
 						new Thread(new Runnable(){
 							public void run(){
 								try{
+									System.out.println("about to accept the file, please type in the name of the file to be stored localy");
+									// read data from socket_control
+									// define once:
 									String str = socket_reader.readLine();
 									//System.out.println("server port_num:\""+str+"\"\n");
 									int port_num=Integer.parseInt(str);
