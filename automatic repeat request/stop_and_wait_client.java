@@ -13,29 +13,28 @@ public class stop_and_wait_client {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			DataOutputStream writer = new DataOutputStream(socket.getOutputStream());
 			Scanner scr=new Scanner(System.in);
-			int numPackets;
+			System.out.println("total # of packets: ");
+			int numPackets=scr.nextInt();
 			int sent=1;
 			boolean data=true;
 			String  str="";
-			while(true){
-			if(data){
-				numPackets=scr.nextInt();
-				writer.writeBytes(numPackets+ "\r\n");
-				System.out.println("sending data: "+numPackets);
-				data=!data;
-			}else{
+			int i=0;
+			while(i<numPackets){
+			
+				writer.writeBytes(i+ "\r\n");
+				System.out.println("sending data: "+i);
+
 				writer.writeBytes(sent+ "\r\n");
 				System.out.println("so far we have sent "+sent+" packets");
 			    str = socket_reader.readLine();
 				if(Integer.parseInt(str)==sent){
 					sent++;
 				}
-				data=!data;
-			}
-
+			
 			//"\r\n" means the end of a packet
-			if(str.equalsIgnoreCase("quit"))
-				break;
+				if(str.equalsIgnoreCase("quit"))
+					break;
+				i++;
 			}
 			socket.close();
 		}catch(Exception e){e.getStackTrace();}

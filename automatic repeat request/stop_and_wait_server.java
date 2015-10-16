@@ -16,20 +16,15 @@ public class stop_and_wait_server{
 			str="";
 			sequence="";
 			while(true){
-			if(data){
+	
 				str = socket_reader.readLine();
 				System.out.println("receiving packet:"+str);
-				data=!data;
-			}
-			else{
 				sequence=socket_reader.readLine();
 				System.out.println("client have sent "+sequence+" bytes");
 				if(lastAck+1==Integer.parseInt(sequence)){
 					writer.writeBytes(sequence + "\r\n");
 					lastAck++;
 				}	
-				data=!data;
-			}
 			if(str.equalsIgnoreCase("quit")){
 				socket.close();
 				break;

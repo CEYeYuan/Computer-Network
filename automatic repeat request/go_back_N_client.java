@@ -20,42 +20,43 @@ public class go_back_N_client {
 
 			int sent=1;
 			String  str="";
-			System.out.println("now please type in the total number of packets, error probablity, window size,timeout value");
+			System.out.println("please type in the total number of packets");
 			numPackets=scr.nextInt();
-			System.out.println("we'll start sending: "+numPackets+" packets");
+			System.out.println("error probablity is ");
 			int probError=scr.nextInt();
-			System.out.println("The probablity of an error message is "+probError+"%");
+			System.out.println("window size is");
 			wSize=scr.nextInt();
-			System.out.println("The windows size is "+wSize);
+			System.out.println("timeout is ");
 			timeOut=scr.nextInt();
-			System.out.println("Time out is  "+timeOut);
 			int[] timer=new int[wSize];
 			Thread thread=new Thread(new Listener(socket));
 			thread.start();
-			int i=0;
-			for(int i=0;i<wSize;i++){
+			int i=1;
+			for(i=1;i<=wSize;i++){
 				int rd=rg.nextInt(100)+1;
-				numPackets=scr.nextInt();
-				if(rd>probError)
-					writer.writeBytes(numPackets+ "\r\n");
+				if(rd>probError){
+					writer.writeBytes(i+ "\r\n");
+				}
 				timer[(sent-1)%wSize]=System.currentTimeMillis();
-				System.out.println("sending data: "+numPackets);
+				System.out.println("sending data: "+i);
 				writer.writeBytes(sent+ "\r\n");
 				sent++;
 			}
-			while(){
+			while(lastAck<numPackets){
+				if(System.currentTimeMillis()-timer[0]>timeOut){
+					i=lastAck+1;
+				}
 				int rd=rg.nextInt(100)+1;
-				numPackets=scr.nextInt();
-				if(rd>probError)
+				if(rd>probError){
 					writer.writeBytes(numPackets+ "\r\n");
+				}
 				timer[(sent-1)%wSize]=System.currentTimeMillis();
-				System.out.println("sending data: "+numPackets);
+				System.out.println("sending data: "+i);
 				writer.writeBytes(sent+ "\r\n");
 				sent++;
-				
-				//"\r\n" means the end of a packet
 				if(str.equalsIgnoreCase("quit"))
 					break;
+				i++;
 			}
 			socket.close();
 		}catch(Exception e){e.getStackTrace();}
