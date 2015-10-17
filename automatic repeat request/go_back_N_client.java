@@ -28,37 +28,60 @@ public class go_back_N_client {
 			wSize=scr.nextInt();
 			System.out.println("timeout is ");
 			timeOut=scr.nextInt();
-			int[] timer=new int[wSize];
+			long[] timer=new long[wSize];
 			Thread thread=new Thread(new Listener(socket));
 			thread.start();
-			int i=1;
-			for(i=1;i<=wSize;i++){
+
+			for(sent=1;sent<=wSize;sent++){
 				int rd=rg.nextInt(100)+1;
 				if(rd>probError){
-					writer.writeBytes(i+ "\r\n");
+					writer.writeBytes(sent+ "\r\n");
+					timer[(sent-1)%wSize]=System.currentTimeMillis();
+					System.out.println("sending data: "+sent+" success");
 				}
-				timer[(sent-1)%wSize]=System.currentTimeMillis();
-				System.out.println("sending data: "+i);
-				writer.writeBytes(sent+ "\r\n");
-				sent++;
+				else{
+					timer[(sent-1)%wSize]=System.currentTimeMillis();
+					System.out.println("sending data: "+sent+" failed");
+				}
+				
+				
+				
 			}
 			while(lastAck<numPackets){
-				if(System.currentTimeMillis()-timer[0]>timeOut){
-					i=lastAck+1;
+
+				if(sent<=lastAck+wSize&&sent<=numPackets){
+					int rd=rg.nextInt(100)+1;
+					if(rd>probError){
+					writer.writeBytes(sent+ "\r\n");
+					timer[(sent-1)%wSize]=System.currentTimeMillis();
+					System.out.println("sending data: "+sent+" success");
+					}
+					else{
+						timer[(sent-1)%wSize]=System.currentTimeMillis();
+						System.out.println("sending data: "+sent+" failed");
+					}
+					timer[(sent-1)%wSize]=System.currentTimeMillis();
+					sent++;
 				}
-				int rd=rg.nextInt(100)+1;
-				if(rd>probError){
-					writer.writeBytes(numPackets+ "\r\n");
+				else if(System.currentTimeMillis()-timer[(sent-1)%wSize]>timeOut){
+					sent=lastAck+1;
+					int rd=rg.nextInt(100)+1;
+					if(rd>probError){
+					writer.writeBytes(sent+ "\r\n");
+					timer[(sent-1)%wSize]=System.currentTimeMillis();
+					System.out.println("sending data: "+sent+" success");
+					}
+					else{
+						timer[(sent-1)%wSize]=System.currentTimeMillis();
+						System.out.println("sending data: "+sent+" failed");
+					}
+					sent++;
 				}
-				timer[(sent-1)%wSize]=System.currentTimeMillis();
-				System.out.println("sending data: "+i);
-				writer.writeBytes(sent+ "\r\n");
-				sent++;
-				if(str.equalsIgnoreCase("quit"))
-					break;
-				i++;
+				else{
+					Thread.sleep(10);
+				}
 			}
-			socket.close();
+			
 		}catch(Exception e){e.getStackTrace();}
 
 	}

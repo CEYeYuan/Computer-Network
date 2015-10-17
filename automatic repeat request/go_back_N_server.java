@@ -15,23 +15,20 @@ public class go_back_N_server{
 			String str,sequence;
 			str="";
 			sequence="";
+			int i=1;
 			while(true){
 		
 				str = socket_reader.readLine();
 				System.out.println("receiving packet:"+str);
-
-				sequence=socket_reader.readLine();
-				System.out.println("client have sent #"+sequence+" byte");
-				if(lastAck+1==Integer.parseInt(sequence)){
-					writer.writeBytes(sequence + "\r\n");
-					lastAck++;
-				}	
-
-			if(str.equalsIgnoreCase("quit")){
-				socket.close();
-				break;
-			}
+				if(Integer.parseInt(str)==i){
+					writer.writeBytes(str + "\r\n");
+					i++;	
+				}
+				else{
+					writer.writeBytes(i-1 + "\r\n");
+				}
 				
-		}}catch(Exception e){e.getStackTrace();}
+			}
+			}catch(Exception e){e.getStackTrace();}
 	}	
 }
