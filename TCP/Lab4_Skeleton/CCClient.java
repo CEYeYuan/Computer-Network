@@ -73,31 +73,45 @@ public class CCClient {
 			int RTT_count=0;
 
 			startTime=System.currentTimeMillis();
+			send_timer[1]=startTime;
 			try {
-				while(sent<=NoPackets&&lastAck!=NoPackets)
-				{	//sent 1 to NoPackets,index is sent-1,ack is the last packet received
+				int index=0;
+				while(lastAck<NoPackets)
+				{
 					//THE MAIN PART OF THE CODE!
 					//send the packets with congestion control using the given instructions
-					
-					if(send_timer[lastAck+1]!=0&&System.currentTimeMillis()-send_timer[lastAck+1]>timeOut){
-						for(int i=lastAck+1;i<=lastAck+cwnd;i++){
-							send_timer[i]=0;
-						}
-						ssthresh=cwnd/2;
-						cwnd=1;
-						sent=lastAck+1;
+					if (index < cwnd && sent <= NoPackets){
+						//if window size isn't used up, go ahead and send a packets
+						System.out.println("Sending packet " + sent);
 						writer.write(sent);
-						send_timer[sent]=System.currentTimeMillis();
-						System.out.println("resending data: "+sent);
+						send_timer[sent] = System.currentTimeMillis();
+						sent++;
+						index++;		
 					}
-					else if(sent<=lastAck+cwnd&&send_timer[sent]==0){
-							writer.write(sent);
-							send_timer[sent]=System.currentTimeMillis();
-							System.out.println("sending data: "+sent);
-							sent++;	
+
+					if (sent==lastAck+1){
+						//after use up all the window, wait for all the ack comes back
+						if (cwnd < ssthresh)//slow start 
+							cwnd *= 2;
+						else//congestion avoidance
+							cwnd += 1;	
+						index = 0;
 					}
+
 					else{
-						Thread.sleep(10);
+						//use up window size, but not all ack come back
+						if (System.currentTimeMillis()-send_timer[lastAck+1]>timeOut)
+						{
+							System.out.println("Timed out");
+							ssthresh = cwnd/2;
+							cwnd = 1;
+							index = 0;
+							sent = lastAck + 1;
+							//go back n
+						}
+						else{
+							Thread.sleep(10);
+						}
 					}
 				}
 			}
@@ -130,19 +144,8 @@ public class CCClient {
 		//i.e., if ack for packet 10 is previously received and now ack for packet 7 is received, lastAck will remain 10
 	
 		if(ackNum>lastAck){
-			System.out.println("update");
 			lastAck=ackNum;
-			windowStart=lastAck+1;
 		}
-
-		if(sent==windowStart+cwnd-1){
-			if(cwnd<=ssthresh)
-				cwnd*=2;
-			else
-				cwnd+=1;
-		}
-
-		
 	}
 
 }
