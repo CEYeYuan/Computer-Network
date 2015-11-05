@@ -24,6 +24,9 @@ public class CCClient {
 	static int timeOut;
 	public static int lastAck = 0;
 	static int sent = 1;
+	static int	cwnd=1;
+	static int windowStart=1;
+	static int ssthresh=Integer.MAX_VALUE;
 	static long[] send_timer;
 	
 	static long startTime;
@@ -51,8 +54,6 @@ public class CCClient {
 			DataOutputStream writer=new DataOutputStream(socket.getOutputStream());
 			Scanner scr = new Scanner(System.in);
 
-			int cwnd=1;
-
 			//define the thread and start it
 			Thread thread=new Thread(new Listener(socket));		
 			thread.start();	 
@@ -67,33 +68,34 @@ public class CCClient {
 			timeOut = EstimatedRTT+4*DevRTT; //in milliseconds
 			lastAck=0;
 			sent=1;
-			cwnd=3;
-			send_timer=new long[NoPackets];
-			int ssthresh=Integer.MAX_VALUE;
+			send_timer=new long[NoPackets+1];
+			
 			int RTT_count=0;
 
 			startTime=System.currentTimeMillis();
 			try {
-				while(sent<=NoPackets)
+				while(sent<=NoPackets&&lastAck!=NoPackets)
 				{	//sent 1 to NoPackets,index is sent-1,ack is the last packet received
 					//THE MAIN PART OF THE CODE!
 					//send the packets with congestion control using the given instructions
-					if(sent<=lastAck+cwnd&&send_timer[sent-1]==0){
+					
+					if(send_timer[lastAck+1]!=0&&System.currentTimeMillis()-send_timer[lastAck+1]>timeOut){
+						for(int i=lastAck+1;i<=lastAck+cwnd;i++){
+							send_timer[i]=0;
+						}
+						ssthresh=cwnd/2;
+						cwnd=1;
+						sent=lastAck+1;
+						writer.write(sent);
+						send_timer[sent]=System.currentTimeMillis();
+						System.out.println("resending data: "+sent);
+					}
+					else if(sent<=lastAck+cwnd&&send_timer[sent]==0){
 							writer.write(sent);
-							send_timer[sent-1]=System.currentTimeMillis();
+							send_timer[sent]=System.currentTimeMillis();
 							System.out.println("sending data: "+sent);
 							sent++;	
 					}
-					else if(System.currentTimeMillis()-send_timer[lastAck]>timeOut){
-						//say lastack=1, arr[1] means the sending time for 2, if timeout happens, 
-						//we should check 2 first, since 2 is the first byte sent but receive no ack
-						sent=lastAck+1;
-						writer.write(sent);
-						send_timer[sent-1]=System.currentTimeMillis();
-						System.out.println("resending data: "+sent);
-						//sent++;
-					}
-					
 					else{
 						Thread.sleep(10);
 					}
@@ -126,10 +128,21 @@ public class CCClient {
 	{
 		//update lastAck here. note that last ack is accumulative, 
 		//i.e., if ack for packet 10 is previously received and now ack for packet 7 is received, lastAck will remain 10
+	
 		if(ackNum>lastAck){
 			System.out.println("update");
 			lastAck=ackNum;
+			windowStart=lastAck+1;
 		}
+
+		if(sent==windowStart+cwnd-1){
+			if(cwnd<=ssthresh)
+				cwnd*=2;
+			else
+				cwnd+=1;
+		}
+
+		
 	}
 
 }
