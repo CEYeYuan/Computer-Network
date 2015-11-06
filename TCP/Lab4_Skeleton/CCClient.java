@@ -22,7 +22,10 @@ public class CCClient {
 	public static int wstart;
 	static long totalTime;
 	static int timeOut;
+	static int[] arr=new int[]{-1,-1,-1};
 	public static int lastAck = 0;
+	static int total=0;
+
 	static int sent = 1;
 	static int	cwnd=1;
 	static int windowStart=1;
@@ -86,7 +89,8 @@ public class CCClient {
 						writer.write(sent);
 						send_timer[sent] = System.currentTimeMillis();
 						sent++;
-						index++;		
+						index++;	
+						total++;	
 					}
 
 					if (sent==lastAck+1){
@@ -96,6 +100,7 @@ public class CCClient {
 						else//congestion avoidance
 							cwnd += 1;	
 						index = 0;
+						System.out.println("window size = "+cwnd);
 					}
 
 					else{
@@ -121,6 +126,10 @@ public class CCClient {
 			finally {
 				endTime = System.currentTimeMillis();
 				totalTime = endTime - startTime;
+				System.out.println("total time ="+totalTime);
+				System.out.println("# of RTT ="+totalTime/1200.0);
+				System.out.println("throughput = "+NoPackets*1.0/totalTime*100);
+
 			}
 			
 			
@@ -142,10 +151,14 @@ public class CCClient {
 	{
 		//update lastAck here. note that last ack is accumulative, 
 		//i.e., if ack for packet 10 is previously received and now ack for packet 7 is received, lastAck will remain 10
-	
+		
+		System.out.println("Received ack = "+ackNum);
+		arr[total%3]=ackNum;
 		if(ackNum>lastAck){
 			lastAck=ackNum;
 		}
+		if(arr[0]==arr[1]&&arr[1]==arr[2])
+			System.out.println("Three duplicate ack");
 	}
 
 }
