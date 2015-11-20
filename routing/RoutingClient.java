@@ -70,11 +70,11 @@ public class RoutingClient {
 		source.minDistance=0;
 		NodeQueue.add(source);
 		while(NodeQueue.isEmpty()==false){
-			Node sourceNode=NodeQueue.remove();
-			Edge[] edge=source.neighbors;
+			Node sourceNode=NodeQueue.poll();
+			Edge[] edge=sourceNode.neighbors;
 			for(Edge e:edge){
 				Node targetNode=e.target;
-				double distance=source.minDistance+e.weight;
+				double distance=sourceNode.minDistance+e.weight;
 				if(distance<targetNode.minDistance){
 					NodeQueue.remove(targetNode);
 					targetNode.minDistance=distance;
@@ -87,11 +87,9 @@ public class RoutingClient {
 
 	public static List<Integer> getShortestPathTo(Node target)
 	{
-		// Complete the body of this function
 		List<Integer> path=new ArrayList<Integer>();
-		path.add(target.name);
-		while(target.previous!=null){
-			path.add(0,target.previous.name);
+		while(target!=null){
+			path.add(0,target.name);
 			target=target.previous;
 		}
 		return path;
@@ -198,19 +196,15 @@ public class RoutingClient {
 						List<Integer> path=getShortestPathTo(end);
 						StringBuffer buffer=new StringBuffer();
 						buffer.append("[");
-						double total=0;
 						boolean isInfinity=false;
-						int pre=path.get(0);
-						buffer.append(pre+" ");
-						for(int i=1;i<path.size();i++){
-							int node=path.get(i);
+						for(int node:path){
 							buffer.append(node+" ");
-							total+=matrix[pre][node];
-							pre=node;
 						}
 						buffer.append("]");
-						System.out.print("Total time to reach node"+end.name+": "+total+"ms, Path : "+buffer.toString()+"\n");
+						System.out.print("Total time to reach node"+end.name+": "+end.minDistance+"ms, Path : "+buffer.toString()+"\n");
 					}
+
+
 					for(Node node:nodeList){
 						node.previous=null;
 						node.minDistance=Double.POSITIVE_INFINITY;
