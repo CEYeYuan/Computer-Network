@@ -4,6 +4,7 @@
 
 - to run the server simply type:
 >>java MainClass [port number] [servic type] [mode]
+>>java MainClass 3333 PROJECT_SERVER
 
 Service type can be: {ECHO_SERVER, FTP_SERVER,ARQ_SERVER,CC_SERVER,ROUTING_SERVE
 R,PROJECT_SERVER}
