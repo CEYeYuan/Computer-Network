@@ -12,29 +12,23 @@ public class MainClient{
 	public static void main(String[] args) {
 		
 		init(args);
-		//initialize the client with the proper port number
-		Socket socket=null;
-		BufferedReader reader=null;
-		DataOutputStream writer=null;
-		Scanner scr=null;
-		
 		try 
 		{
-			socket=new Socket(host, port);
+			Socket socket=new Socket(host, port);
 			System.out.println("Connected to : "+ host+ ":"+socket.getPort());
-			reader=new BufferedReader(new InputStreamReader(socket.getInputStream())); //for reading lines
-			writer=new DataOutputStream(socket.getOutputStream());	//for writing lines.
-			scr = new Scanner(System.in);		
+			BufferedReader socket_reader=new BufferedReader(new InputStreamReader(socket.getInputStream())); //for reading lines
+			DataOutputStream writer=new DataOutputStream(socket.getOutputStream());	//for writing lines.
+			Scanner scr = new Scanner(System.in);	
+			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));	
 			//initialize all these variables
 
 			while(socket!=null && socket.isConnected() && !socket.isClosed()){
-				//System.out.println("Enter number of nodes in the network, 0 to Quit: ");
-				//noNodes = scr.nextInt();
-				// Send noNodes to the server, and read a String from it containing adjacency matrix
+				
+				/***************************************************************/
+				/*****construct the grahp and calculate shortest path **********/	
 				String CRLF="\r\n";
-				//writer.writeBytes(noNodes+CRLF); 
-				noNodes=Integer.parseInt(reader.readLine());
-				String respond=reader.readLine();
+				noNodes=Integer.parseInt(socket_reader.readLine());
+				String respond=socket_reader.readLine();
 				System.out.println("Adjacency Matrix:\n"+respond);
 			
 				double[][] matrix= new double[noNodes][noNodes];
@@ -48,8 +42,30 @@ public class MainClient{
 				Node start=nodeList.get(0);
 				Routing.computePaths(start);
 				print_shortestpath(nodeList);
+				double timeoutInteval=2*nodeList.get(nodeList.size()-1).minDistance+200;
 				//print the shortest path tree rooted at node 0
-			
+
+				/***************************************************************/
+				/**************************file transfer************************/
+				System.out.println("Enter the name of the file: \n");
+				String file_name = reader.readLine();
+				writer.writeBytes(file_name + "\r\n");
+				System.out.println("File name: "+file_name+"\n");
+				DataInputStream socket_dis = new DataInputStream(socket.getInputStream());
+				File file=new File(file_name);
+				FileOutputStream fos= new FileOutputStream(file);
+				byte[] buffer = new byte[1004];
+				int total=0;
+				while (true){
+					int len =socket_dis.read(buffer);
+					total+=len;
+					if(len<=0)
+						break;
+					fos.write(buffer, 0, len); //writing a portion of buffer
+				}
+
+					
+				break;
 				
 			}
 			socket.close();
