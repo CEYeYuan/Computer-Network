@@ -13,8 +13,10 @@ public class Listener implements Runnable{
 			String ack;
 			while(true){
 				ack=socket_reader.readLine();
-				System.out.println("received "+ack);
-				go_back_N_client.setAckNum(Integer.parseInt(ack));
+				if(ack!=null){
+					System.out.println("received ack"+ ack);
+					MainClient.setAckNum(Integer.parseInt(ack));
+				}
 			}
 		}
 		catch(Exception e){

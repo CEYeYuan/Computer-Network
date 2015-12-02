@@ -2,12 +2,15 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import javax.xml.ws.handler.MessageContext.Scope;
+import java.nio.*;
 
 public class MainClient{
 	static String mode;
 	static String host;
 	static int port;
 	static int noNodes;
+	static int lastAck;
+
 
 	public static void main(String[] args) {
 		
@@ -41,45 +44,105 @@ public class MainClient{
 				// Finding shortest path starting from node 0
 				Node start=nodeList.get(0);
 				Routing.computePaths(start);
-				print_shortestpath(nodeList);
+				List<Integer> path=print_shortestpath(nodeList);
 				double timeoutInteval=2*nodeList.get(nodeList.size()-1).minDistance+200;
 				//print the shortest path tree rooted at node 0
 
 				/***************************************************************/
 				/**************************file transfer************************/
-				System.out.println("Enter the name of the file: \n");
+				writer.writeBytes(path+ "\r\n");
+				System.out.println("Enter the name of the file:");
 				String file_name = reader.readLine();
 				writer.writeBytes(file_name + "\r\n");
-				System.out.println("File name: "+file_name+"\n");
-				DataInputStream socket_dis = new DataInputStream(socket.getInputStream());
 				File file=new File(file_name);
-				FileOutputStream fos= new FileOutputStream(file);
-				byte[] buffer = new byte[1004];
-				int total=0;
-				while (true){
-					int len =socket_dis.read(buffer);
-					total+=len;
-					if(len<=0)
-						break;
-					fos.write(buffer, 0, len); //writing a portion of buffer
+			    if (file.exists()){
+			    	System.out.println("File length: "+file.length());
+			    	long noPackets=file.length()%1000==0?file.length()/1000:file.length()/1000+1;
+			    	writer.writeBytes(noPackets + "\r\n");
+			    	FileInputStream fin= new FileInputStream(file);
+					DataOutputStream socket_dos = new DataOutputStream(socket.getOutputStream());
+					Thread listener=new Thread(new Listener(socket));
+					listener.start();
+					send(file,fin,socket_dos,timeoutInteval);
+					System.out.println("Quiting");
+					socket_dos.close();
+					socket.close();
+					break;
+				}else{	
+					System.out.println("File does not exist");
 				}
-
-					
-				break;
-				
-			}
-			socket.close();
-			System.out.println("Quit");
-
-
-		} catch (Exception e) {
+		}		
+	} catch (Exception e) {
 			e.printStackTrace();
-		}
-
 	}
-	private static void print_shortestpath(List<Node> nodeList){
+}
+
+	public static void setAckNum(int ack){
+		if(ack>lastAck)
+			lastAck=ack;
+	}
+	private static void send(File file,FileInputStream fin,DataOutputStream socket_dos,double timeOut) throws Exception{
+		
+		long length=file.length();
+		int  NoPackets=(int)(length%1000==0?length/1000:length/1000+1);
+		byte[][] buffer = new byte[NoPackets+1][1004];
+		long[] send_timer=new long[NoPackets+1];
+		lastAck=0;
+		int sent=1;
+		int index=0;
+		int cwnd=1;
+		int ssthresh=Integer.MAX_VALUE;
+		long startTime=System.currentTimeMillis();
+		while(lastAck<NoPackets){
+			//THE MAIN PART OF THE CODE!
+			//send the packets with congestion control using the given instructions
+			if (index < cwnd && sent <= NoPackets){
+				//if window size isn't used up, go ahead and send a packets
+				System.out.println("Sending packet " + sent);
+				fin.read(buffer[sent],4,1000);
+				ByteBuffer buf = ByteBuffer.allocate(4);
+				buf.putInt(sent);				
+				for(int j=0;j<4;j++){
+					buffer[sent][j] = buf.get(j);
+				}
+				socket_dos.write(buffer[sent], 0, 1000); //writing a portion of buffer
+				send_timer[sent] = System.currentTimeMillis();
+				sent++;
+				index++;		
+			}
+			if (sent==lastAck+1){
+				//after use up all the window, wait for all the ack comes back
+				if (cwnd < ssthresh)//slow start 
+					cwnd *= 2;
+				else//congestion avoidance
+					cwnd += 1;	
+				index = 0;
+					System.out.println("window size = "+cwnd);
+				}
+			else{
+				//use up window size, but not all ack come back
+				if (System.currentTimeMillis()-send_timer[lastAck+1]>timeOut){
+					System.out.println("Timed out");
+					ssthresh = cwnd/2;
+					cwnd = 1;
+					index = 0;
+					sent = lastAck + 1;
+					//go back n
+				}
+				else{
+					Thread.sleep(10);
+				}
+			}
+		}
+		long endTime = System.currentTimeMillis();
+		long totalTime = endTime - startTime;
+		System.out.println("total time ="+totalTime);
+		System.out.println("# of RTT ="+totalTime/timeOut);	
+	}
+	private static List<Integer> print_shortestpath(List<Node> nodeList){
+		List<Integer> path=null;
 		for(Node end:nodeList){
-			List<Integer> path=Routing.getShortestPathTo(end);
+			path=Routing.getShortestPathTo(end);
 			StringBuffer buffer=new StringBuffer();
 			buffer.append("[");
 			boolean isInfinity=false;
@@ -89,6 +152,7 @@ public class MainClient{
 			buffer.append("]");
 			System.out.print("Total time to reach node"+end.name+": "+end.minDistance+"ms, Path : "+buffer.toString()+"\n");
 		}		
+		return path;
 	}
 	private static void init(String[] args){
 		if(args.length<=0)
