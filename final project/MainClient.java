@@ -70,6 +70,8 @@ public class MainClient{
 					break;
 				}else{	
 					System.out.println("File does not exist");
+					socket.close();
+					break;
 				}
 		}		
 	} catch (Exception e) {
@@ -159,7 +161,7 @@ public class MainClient{
 		{
 			mode="client";
 			host="localhost";
-			port=3333;
+			port=9999;
 		}
 		else if(args.length==1)
 		{
