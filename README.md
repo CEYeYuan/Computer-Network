@@ -17,8 +17,8 @@ Through this course, I was able to grasp the lower level intricacies of computer
 **Technologies Used:** Java</b>
 
 **Labs Include:**
-  - **Lab 1** Java warm up, practice of socket programming. Implemented a basic echo server
-  - **Lab 2** FTP server design. Use different thread for sending/receiving the packets to implement full duplex. Also, data and control information are sent through different TCP connections.
+  - **Lab 1** Java warm up, practise of socket programming. Implemented a basic echo server
+  - **Lab 2** FTP server design. Used different thread for sending/receiving the packets to implement full duplex. Also, data and control information are sent through seperate TCP connections.
   - **Lab 3** ARQ. Used two approach to implement reliable data transfer: stop and wait, go back n
   - **Lab 4** TCP. Further more, implemented TCP protocal using socket interface. To realize reliable data transfer, used selective repeat. To accomplish congestion control, used TCP Reno and Taheo, seprately.
   - **Lab 5** Rounting. Took use of Dijkstra's algorithm to calculate the optimal path between two nodes in the network.(link state).
