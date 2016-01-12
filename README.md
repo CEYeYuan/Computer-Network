@@ -11,7 +11,7 @@ Through this course, I was able to grasp the lower level intricacies of computer
 <li>Layer 3: Network Layer (IP, OSPF, RIP)</li>
 <li>Layer 2: Data Link Layer</li>
 <li>Layer 1: Phisical Layer</li>
-<li>Authors**: Ye Yuan</li>
+**Authors**: Ye Yuan</li>
 </ul>
 
 **Technologies Used:** Java</b>
